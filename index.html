@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Glove by ddfreyne</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Glove</h1>
+        <p>Crystal framework for making games</p>
+
+        <p class="view"><a href="https://github.com/ddfreyne/glove">View the Project on GitHub <small>ddfreyne/glove</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/ddfreyne/glove/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/ddfreyne/glove/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/ddfreyne/glove">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p>Glove is a framework for making games. It is implemented in <a href="https://crystal-lang.org/">Crystal</a>.</p>
+
+<p><strong>Caution!</strong> Glove is experimental. Expect many breaking changes. There are no tests. Do not use this for your own projects.</p>
+
+<h2>
+<a id="example-code" class="anchor" href="#example-code" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example code</h2>
+
+<p>Here is a trivial example that renders a card (from <code>assets/card.png</code>):</p>
+
+<div class="highlight highlight-source-crystal"><pre><span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">"</span>glove<span class="pl-pds">"</span></span>
+
+card <span class="pl-k">=</span>
+  <span class="pl-c1">Glove</span>::<span class="pl-c1">Entity</span>.new.tap <span class="pl-k">do </span>|<span class="pl-smi">e</span>|
+    e <span class="pl-k">&lt;&lt;</span> <span class="pl-c1">Glove</span>::<span class="pl-c1">Components</span>::<span class="pl-c1">Texture</span>.new(<span class="pl-s"><span class="pl-pds">"</span>assets/card.png<span class="pl-pds">"</span></span>)
+    e <span class="pl-k">&lt;&lt;</span> <span class="pl-c1">Glove</span>::<span class="pl-c1">Components</span>::<span class="pl-c1">Transform</span>.new.tap <span class="pl-k">do </span>|<span class="pl-smi">t</span>|
+      t.width <span class="pl-k">=</span> <span class="pl-c1">140_</span>f<span class="pl-c1">32</span>
+      t.height <span class="pl-k">=</span> <span class="pl-c1">190_</span>f<span class="pl-c1">32</span>
+      t.translate_x <span class="pl-k">=</span> <span class="pl-c1">400_</span>f<span class="pl-c1">32</span>
+      t.translate_y <span class="pl-k">=</span> <span class="pl-c1">300_</span>f<span class="pl-c1">32</span>
+    <span class="pl-k">end</span>
+  <span class="pl-k">end</span>
+
+scene <span class="pl-k">=</span>
+  <span class="pl-c1">Glove</span>::<span class="pl-c1">Scene</span>.new.tap <span class="pl-k">do </span>|<span class="pl-smi">scene</span>|
+    scene.spaces <span class="pl-k">&lt;&lt;</span> <span class="pl-c1">Glove</span>::<span class="pl-c1">Space</span>.new.tap <span class="pl-k">do </span>|<span class="pl-smi">space</span>|
+      space.entities <span class="pl-k">&lt;&lt;</span> card
+    <span class="pl-k">end</span>
+  <span class="pl-k">end</span>
+
+game <span class="pl-k">=</span> <span class="pl-c1">Glove</span>::<span class="pl-c1">EntityApp</span>.new(<span class="pl-c1">800</span>, <span class="pl-c1">600</span>, <span class="pl-s"><span class="pl-pds">"</span>Inari<span class="pl-pds">"</span></span>)
+game.clear_color <span class="pl-k">=</span> <span class="pl-c1">Glove</span>::<span class="pl-c1">Color</span>::<span class="pl-c1">WHITE</span>
+game.replace_scene(scene)
+game.run</pre></div>
+
+<h2>
+<a id="architecture" class="anchor" href="#architecture" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Architecture</h2>
+
+<ul>
+<li>
+<p><code>Glove::EntityApp</code> is a generic game superclass that provides functionality for handling entities, and everything associated with it. Here is how a typical game would build an instance and run the game:</p>
+
+<div class="highlight highlight-source-crystal"><pre>game <span class="pl-k">=</span> <span class="pl-c1">Glove</span>::<span class="pl-c1">EntityApp</span>.new(<span class="pl-c1">800</span>, <span class="pl-c1">600</span>, <span class="pl-s"><span class="pl-pds">"</span>Inari<span class="pl-pds">"</span></span>)
+game.clear_color <span class="pl-k">=</span> <span class="pl-c1">Glove</span>::<span class="pl-c1">Color</span>::<span class="pl-c1">WHITE</span>
+scene <span class="pl-k">=</span> <span class="pl-c1">Glove</span>::<span class="pl-c1">Scene</span>.new.tap <span class="pl-k">do </span>|<span class="pl-smi">scene</span>|
+  <span class="pl-c"># … build scene here …</span>
+<span class="pl-k">end</span>
+game.replace_scene(scene)
+game.run</pre></div>
+</li>
+<li><p><code>Glove::Entity</code> is a game object that is visible and/or reacts to user input.</p></li>
+<li><p><code>Glove::Component</code> is a property of an entity. A common component is <code>Glove::Components::Transform</code>, which adds width, height, rotation, scale, … to an entity. Another common component is <code>Glove::Components::Camera</code>, which marks an entity as being a camera, and defines which part of a space (see below) will be rendered, with what rotation, etc.</p></li>
+<li><p><code>Glove::Action</code> defines a change to an entity. It can either be instant (e.g. remove entity) or act over time (e.g. move).</p></li>
+<li><p><code>Glove::Space</code> groups entities in a scene that logically belong together and can interact with each other. Entities in different spaces never interact. For example, one space might contain the game entities, and another space might contain UI elements.</p></li>
+<li><p><code>Glove::Scene</code> describes a scene (such as the main menu, credits, or in-game screen). It contains one or more spaces.</p></li>
+</ul>
+
+<p>There are also a handful of simple data classes:</p>
+
+<ul>
+<li><code>Glove::Color</code></li>
+<li><code>Glove::Point</code></li>
+<li><code>Glove::Quad</code></li>
+<li><code>Glove::Rect</code></li>
+<li><code>Glove::Size</code></li>
+<li><code>Glove::Vector</code></li>
+</ul>
+
+<h2>
+<a id="acknowledgements" class="anchor" href="#acknowledgements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Acknowledgements</h2>
+
+<p>This project started out by playing with <a href="https://github.com/ggiraldez/crystal-gl">crystal-gl</a> by Gustavo Giráldez.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/ddfreyne">ddfreyne</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
